@@ -1,7 +1,5 @@
-
 import oci
-from datetime import datetime
-
+from datetime import datetime,timedelta
 
 config = oci.config.from_file("~/.oci/config","DEFAULT")
 
@@ -39,19 +37,23 @@ for i in range(0,l):
     print(list_volume_backups_response.data)
     volBackupsLen= len(list_volume_backups_response.data)
     j=0
+    # Delete backups greater than 30 days
     for j in range(0,volBackupsLen):
-        # date_time_obj = datetime.strptime(list_volume_backups_response.data[j].time_created, '%d/%m/%y %H:%M:%S')
-        # #timecreated= list_volume_backups_response.data[j].time_created
-        # #startdate=list_volume_backups_response.data[j].time_created.getTime()
-        # #startdate = datetime.datetime.now(datetime.timezone.utc).isoformat() - list_volume_backups_response.data[j].time_created
-        # print(date_time_obj)
+        # print("Date - "+str(list_volume_backups_response.data[j].time_created))
+        # print(backuptime)
+        # print(timebefore30days)
+        timebefore30days = datetime.now() - timedelta(days=30)
+        volbackuptime = datetime.strptime(str(list_volume_backups_response.data[j].time_created),
+                                       '%Y-%m-%d %H:%M:%S.%f+00:00')
 
-        #print(timecreated)
-        print(datetime.datetime.now(datetime.timezone.utc).isoformat())
-        print("Deleting volume -" + list_volume_backups_response.data[j].display_name)
-        delete_volume_backup_response = core_client.delete_volume_backup(
-            volume_backup_id=list_volume_backups_response.data[j].id
-        )
-
-        # Get the data from response
-        print(delete_volume_backup_response.headers)
+        if timebefore30days > volbackuptime:
+            print("Delete backups greater than 30 days")
+            print("Deleting volume -" + list_volume_backups_response.data[j].display_name)
+            delete_volume_backup_response = core_client.delete_volume_backup(
+                volume_backup_id=list_volume_backups_response.data[j].id
+            )
+            # Get the data from response
+            print(delete_volume_backup_response.headers)
+        #
+        # else:
+        #     print("No backups or All backups are created less than 30 days")
