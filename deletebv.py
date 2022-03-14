@@ -5,7 +5,7 @@ config = oci.config.from_file("~/.oci/config","DEFAULT")
 
 # Initialize service client with default config file
 core_client = oci.core.BlockstorageClient(config)
-ocicompartment="ocid1.compartment.oc1..aaaaaaaa77nal23ijjj6bzlzj7onsgn4txw6g5y62j6xfeypptgbc242tttq"
+ocicompartment="<<enter compartment id>>"
 
 # Send the request to service, some parameters are not required, see API
 # LIST VOLUMES
